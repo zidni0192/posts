@@ -1,25 +1,35 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useEffect } from 'react'
+import { Routes, Route, useNavigate } from "react-router";
+import Admin from './container/admin';
+import Home from './container/home';
+import Login from './container/login';
+export default function App() {
+  const navigate = useNavigate();
 
-function App() {
+  const checkIsLoggedIn = async () => {
+    let user = await localStorage.getItem('user')
+    if (user && user !== "") {
+      user = JSON.parse(user)
+      if (Number(user.isAdmin)) {
+        navigate('/admin', { replace: true })
+      } else {
+        navigate('/', { replace: true })
+      }
+    } else {
+      navigate('/login', { replace: true })
+    }
+  }
+
+  useEffect(() => {
+    checkIsLoggedIn('')
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    <Routes>
+      <Route path="/" element={<Home />} />
+      <Route path="/login" element={<Login />} />
+      <Route path="/liked-posts" element={<Admin />} />
+      <Route path="/admin" element={<Admin />} />
+    </Routes>
+  )
 }
-
-export default App;
