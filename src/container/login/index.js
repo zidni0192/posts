@@ -4,21 +4,27 @@ import Paper from '@mui/material/Paper';
 import { Button, FormControl, MenuItem, TextField, Select, Typography } from '@mui/material';
 import user from '../../api/user';
 import { useNavigate } from 'react-router';
+import { useDispatch } from 'react-redux';
+import { setUser } from '../../redux/reducers/user';
 
 export default function Login() {
   const navigate = useNavigate();
+  const dispatch = useDispatch()
 
   const onSubmit = async (event) => {
     const formData = new FormData(event.currentTarget);
     event.preventDefault();
     const result = await user.login(formData.get('userId'), formData.get('email'), formData.get('loginAs'))
     if (result) {
-      localStorage.setItem('user', result)
-      navigate('/', { replace: true })
-    } else {
-
+      dispatch(setUser(result))
+      if (Number(result.isAdmin)) {
+        navigate('/admin', { replace: true })
+      } else {
+        navigate('/', { replace: true })
+      }
     }
   }
+  
   return (
     <Paper sx={{ p: 2, margin: 'auto', maxWidth: 500, flexGrow: 1, marginTop: 20 }}>
       <form onSubmit={onSubmit}>

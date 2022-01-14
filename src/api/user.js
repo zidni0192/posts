@@ -3,10 +3,8 @@ import { API_HOST } from "../constant/hosts"
 
 const login = async (userId, email, isAdmin) => {
     const { data } = await axios.get(`${API_HOST}/users/${userId}`)
-    console.log(data);
     if (data?.email === email) {
-        const user = JSON.stringify({ ...data, isAdmin })
-        return user
+        return { ...data, isAdmin }
     } else {
         return false
     }

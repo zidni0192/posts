@@ -2,20 +2,28 @@ import React from 'react'
 import { AppBar, IconButton, Menu, MenuItem, Toolbar, Typography } from '@mui/material'
 import { Menu as MenuIcon, MoreVert, Favorite } from '@mui/icons-material';
 import { useNavigate } from 'react-router';
+import { useSelector } from 'react-redux';
 
-export default function Header({ isAdmin, title }) {
+export default function Header({ title }) {
     const [anchorEl, setAnchorEl] = React.useState(null);
+    const user = useSelector((state) => state.user.data)
     const navigate = useNavigate();
 
     const handleMenu = (event) => {
         setAnchorEl(event.currentTarget);
     };
+
     const handleClose = () => {
         setAnchorEl(null);
     };
 
+    const redirectLiked = () => {
+        navigate('/liked-posts')
+    };
+
     const handleLogout = () => {
         localStorage.removeItem('user')
+        localStorage.removeItem('liked')
         handleClose()
         navigate('/login', { replace: true })
     }
@@ -35,13 +43,14 @@ export default function Header({ isAdmin, title }) {
                     {title}
                 </Typography>
                 <div>
-                    {!isAdmin && (
+                    {!Number(user.isAdmin) && (
                         <IconButton
                             size="large"
                             aria-label="account of current user"
                             aria-controls="menu-appbar"
                             aria-haspopup="true"
                             color="inherit"
+                            onClick={redirectLiked}
                         >
                             <Favorite />
                         </IconButton>

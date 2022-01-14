@@ -10,4 +10,14 @@ const getPosts = async (page = 1, limit = 5) => {
     }
 }
 
-export default { getPosts }
+const getComments = async (postId) => {
+    const { data } = await axios.get(`${API_HOST}/comments?postId=${postId}`)
+    if (data) {
+        return data
+    } else {
+        return false
+    }
+}
+
+const post = { getPosts, getComments }
+export default post
